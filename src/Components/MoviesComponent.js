@@ -4,8 +4,9 @@ import Loader from 'react-loader-spinner'
 class MoviesComponent extends React.Component {
     constructor(props){
         super(props);
+        let name=props.src.name;  
         this.state={
-            search:'',
+            search:name ? name :'',
             movies:[],
             totalItems:0,
             currentPage: 1,
@@ -15,23 +16,16 @@ class MoviesComponent extends React.Component {
         }
         this.handleClick = this.handleClick.bind(this);
         this.updates = this.updates.bind(this);
-        this.fetchMovies = this.fetchMovies.bind(this);
-        // fetch("http://www.omdbapi.com/?i=tt3896198&apikey=fa281222&s=",{
-        //     method: 'GET',  
-        // })
-        // .then((response)=>response.json())
-        // .then((data)=>  {         
-        //     this.setState({movies:data.Search,totalItems:data.totalResults}); 
-        //    this.updates();
-        //     }        
-        // );
+        this.fetchMovies = this.fetchMovies.bind(this);           
+
+        this.fetchMovies(props);
     }
     handleClick(event) {
         this.setState({
           currentPage: Number(event.target.id),
           loading:true
         });        
-        this.fetchMovies()
+        this.fetchMovies(this.props,event.target.id);
       }
 
       updates(){
@@ -54,25 +48,15 @@ class MoviesComponent extends React.Component {
     UNSAFE_componentWillReceiveProps(pr){
         let name=pr.src.name;       
         this.setState({search:name,currentPage:1});
-        //this.fetchMovies();
-        let movie=this.state.search;
-        let page=this.state.currentPage;
-        fetch("http://www.omdbapi.com/?i=tt3896198&apikey=fa281222&s="+name+"&page="+page,{
-            method: 'GET',  
-        })
-        .then((response)=>response.json())
-        .then((data)=>  {   
-            console.log(data.totalResults,'Move List')   
-            this.setState({movies:data.Search,totalItems:data.totalResults});
-            //this.forceUpdate();
-            this.updates();
-            }        
-        );
+        this.fetchMovies(pr);
     }
-    fetchMovies(){
+   
+    fetchMovies(pr,crpage){
+        this.setState({loading:true});
         let movie=this.state.search;
-        let page=this.state.currentPage;
-        fetch("http://www.omdbapi.com/?i=tt3896198&apikey=fa281222&s="+movie+"&page="+page,{
+        let name=pr.src.name;  
+        let page=crpage ? crpage :this.state.currentPage;
+        fetch("http://www.omdbapi.com/?i=tt3896198&apikey=fa281222&s="+name+"&page="+page,{
             method: 'GET',  
         })
         .then((response)=>response.json())
@@ -81,6 +65,7 @@ class MoviesComponent extends React.Component {
             this.setState({movies:data.Search,totalItems:data.totalResults,loading:false});
             //this.forceUpdate();
             this.updates();
+            this.forceUpdate();
             }        
         );
     }

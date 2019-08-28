@@ -6,6 +6,7 @@ class HeaderComponent extends React.Component {
     constructor(props){
         super(props);
         this.search=this.search.bind(this);
+        this.props.searchMovies("bat");
     }
     search(e){
         this.props.searchMovies(e.target.value);

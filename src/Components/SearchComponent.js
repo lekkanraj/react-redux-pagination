@@ -6,10 +6,14 @@ class SearchComponent extends React.Component {
         this.state={
             moviesCount:0,
         }
+        let name=props.src.name;
+        this.getMovies(name);
     }
     UNSAFE_componentWillReceiveProps(pr){
         let name=pr.src.name;
-       
+        this.getMovies(name);        
+    }
+    getMovies(name){
         fetch("http://www.omdbapi.com/?i=tt3896198&apikey=fa281222&s="+name,{
             method: 'GET',  
         })
